@@ -1,20 +1,13 @@
 require 'colorize'
 # Game will be played between a Player and a Computer
 # Computer will randomly select a color pattern
-# Colors will be associated with numbers 1-6, with White and Black reserved for feedback
+# Colors will be associated with numbers 1-6, with White and Red reserved for feedback
 # Player will have twelve rounds to guess pattern
 # If the Player guesses the code correctly the game ends with the Player winning
 # If the Player cannot guess the code correctly, in twelve rounds, the Player loses
 
-puts " 1 ".on_blue #1
-puts " 2 ".on_red #2
-puts " 3 ".on_green #3
-puts ' 4 '.on_yellow #4
-puts ' 5 '.on_cyan #5
-puts ' 6 '.on_magenta #6
-
-puts '  '.on_white #correct color, wrong position
-puts '  '.on_black #correct color and position
+# puts "\u{2bc1}".white #correct color, wrong position, uses unicode
+# puts "\u{2bc1}".red #correct color and position, uses unicode
 
 # create a computer, player, mastermind, and code class
   # the mastermind class will hold the instance of the game, and methods that will correlate to the rules of the game.
@@ -30,4 +23,23 @@ puts '  '.on_black #correct color and position
   # continue checking until 12 rounds are played
   # ask user to play again
 
-  puts "\u{2bc1}".red
+class Player
+
+end
+
+class Mastermind
+
+end
+
+class Computer
+
+end
+
+class Code
+  attr_reader :choices, :code_pattern
+
+  def initialize
+    @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
+    @code_pattern = []
+  end
+end
