@@ -22,6 +22,7 @@ require 'colorize'
     # if the user pattern is correct, end the game
   # continue checking until 12 rounds are played
   # ask user to play again
+  # use .join() method to print elements on oneline
 
 class Player
 
@@ -35,6 +36,7 @@ class Computer
 
 end
 
+# Code class stores and creates the code_pattern to break
 class Code
   attr_reader :choices, :code_pattern
 
@@ -42,4 +44,13 @@ class Code
     @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
     @code_pattern = []
   end
+
+  def create_code(a, b, c, d)
+    @code_pattern.push(@choices[a - 1], @choices[b - 1], @choices[c - 1], @choices[d - 1])
+  end
 end
+
+my_code = Code.new
+my_code.create_code(1, 2, 3, 4)
+
+puts my_code.code_pattern.join()
