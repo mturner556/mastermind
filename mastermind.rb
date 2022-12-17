@@ -24,16 +24,33 @@ require 'colorize'
   # ask user to play again
   # use .join() method to print elements on oneline
 
-class Player
-
-end
-
+# Mastermind class keeps track of the rounds and checks the player pattern to the user pattern
 class Mastermind
+  attr_reader :rounds, :master_code, :player_code
 
+  def initialize
+    @rounds = 0
+    @master_code = false
+    @player_code = nil
+  end
+
+  def player_input
+    input = gets.chomp
+    @player_code = input.split(' ')
+  end
 end
 
+# Computer class initalizes with a random number
 class Computer
+  attr_reader :pattern
 
+  def initialize
+    @pattern = nil
+  end
+
+  def make_pattern
+    @pattern = (1..6).to_a.shuffle.take(4)
+  end
 end
 
 # Code class stores and creates the code_pattern to break
@@ -45,12 +62,15 @@ class Code
     @code_pattern = []
   end
 
-  def create_code(a, b, c, d)
-    @code_pattern.push(@choices[a - 1], @choices[b - 1], @choices[c - 1], @choices[d - 1])
+  def create_code(a)
+    a.each { |e| @code_pattern.push(@choices[e - 1]) }
   end
 end
 
 my_code = Code.new
-my_code.create_code(1, 2, 3, 4)
-
-puts my_code.code_pattern.join()
+my_computer = Computer.new.make_pattern
+my_code.create_code(my_computer)
+puts my_code.code_pattern.join
+game = Mastermind.new
+game.player_input
+p game.player_code
