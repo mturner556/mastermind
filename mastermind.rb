@@ -35,8 +35,8 @@ class Mastermind
   end
 
   def player_input
-    input = gets.chomp
-    @player_code = input.split(' ')
+    @player_code = gets.chomp.split('')
+    @player_code = @player_code.map(&:to_i)
   end
 end
 
@@ -55,22 +55,21 @@ end
 
 # Code class stores and creates the code_pattern to break
 class Code
-  attr_reader :choices, :code_pattern
+  attr_reader :choices, :mastermind_pattern
 
   def initialize
     @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
-    @code_pattern = []
+    @mastermind_pattern = []
   end
 
-  def create_code(a)
-    a.each { |e| @code_pattern.push(@choices[e - 1]) }
+  def create_mastermind_pattern(a)
+    a.each { |e| @mastermind_pattern.push(@choices[e - 1]) }
   end
 end
 
 my_code = Code.new
 my_computer = Computer.new.make_pattern
-my_code.create_code(my_computer)
+my_code.create_mastermind_pattern(my_computer)
 puts my_code.code_pattern.join
 game = Mastermind.new
 game.player_input
-p game.player_code
