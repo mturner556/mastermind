@@ -1,75 +1,80 @@
-require 'colorize'
-# Game will be played between a Player and a Computer
-# Computer will randomly select a color pattern
-# Colors will be associated with numbers 1-6, with White and Red reserved for feedback
-# Player will have twelve rounds to guess pattern
-# If the Player guesses the code correctly the game ends with the Player winning
-# If the Player cannot guess the code correctly, in twelve rounds, the Player loses
-
 # puts "\u{2bc1}".white #correct color, wrong position, uses unicode
 # puts "\u{2bc1}".red #correct color and position, uses unicode
 
-# create a computer, player, mastermind, and code class
-  # the mastermind class will hold the instance of the game, and methods that will correlate to the rules of the game.
-  # the code class will hold the correct code pattern to guess
+# require colorize to display a colorful output in the command line
+require 'colorize'
 
-# the computer will create an instance of the code, using the code class
-
-# the mastermind class will:
-  # call the computer to create a pattern
-  # get the user input for the pattern
-  # check if the user pattern is correct
-    # if the user pattern is correct, end the game
-  # continue checking until 12 rounds are played
-  # ask user to play again
-  # use .join() method to print elements on oneline
-
-# Mastermind class keeps track of the rounds and checks the player pattern to the user pattern
-class Mastermind
-  attr_reader :rounds, :master_code, :player_code
-
-  def initialize
-    @rounds = 0
-    @master_code = false
-    @player_code = nil
-  end
-
-  def player_input
-    @player_code = gets.chomp.split('')
-    @player_code = @player_code.map(&:to_i)
-  end
-end
-
-# Computer class initalizes with a random number
-class Computer
-  attr_reader :pattern
-
-  def initialize
-    @pattern = nil
-  end
-
-  def make_pattern
-    @pattern = (1..6).to_a.shuffle.take(4)
-  end
-end
-
-# Code class stores and creates the code_pattern to break
-class Code
-  attr_reader :choices, :mastermind_pattern
+# MastermindCode class will store a selection of 6 colors and store the master_code
+class MastermindCode
+  attr_reader :choices, :master_code, :hints
 
   def initialize
     @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
-    @mastermind_pattern = []
+    @hints = [' '.on_red, ' '.on_white]
+    @master_code = []
   end
 
-  def create_mastermind_pattern(a)
-    a.each { |e| @mastermind_pattern.push(@choices[e - 1]) }
+  def store_master_code(pattern)
+    pattern.each { |e| @master_code.push(@choices[e - 1]) }
+  end
+
+  def compare(code, master_code)
+    if code == master_code
+      puts 'You win!'
+    else
+      puts 'You lose!'
+    end
   end
 end
 
-my_code = Code.new
-my_computer = Computer.new.make_pattern
-my_code.create_mastermind_pattern(my_computer)
-puts my_code.code_pattern.join
-game = Mastermind.new
-game.player_input
+# Computer class generates a random pattern from 6 numbers that will correlate with the 6 color choices
+class Computer
+  attr_reader :comp_guess_code, :comp_master_code
+
+  def make_master_code
+    @comp_master_code = (1..6).to_a.shuffle.take(4)
+  end
+end
+
+# Player class will take input for a pattern to check against the code_to_break
+class Player
+  attr_reader :player_guess_code, :player_master_code
+
+  def player_guess
+    @player_guess_code = gets.chomp.split('')
+    @player_guess_code = @player_guess_code.map(&:to_i)
+  end
+end
+
+# The Game class will keep track of the rounds, and compare the Player's guess with the Computer's master code
+class Game
+  attr_reader :rounds, :player, :computer
+
+  def initialize
+    @rounds = 0
+    @player = Player.new
+    @computer = Computer.new
+    @code_to_break = MastermindCode.new
+  end
+
+  # play_game will get the Player's code for 12 rounds
+  def play_game
+    while @rounds < 11
+      @player.player_guess
+      @code_to_break.compare(@player.player_guess_code, @computer.comp_master_code)
+      @rounds += 1
+    end
+  end
+
+  def mastermind_code
+    @code_to_break.store_master_code(@computer.make_master_code)
+    puts @computer.comp_master_code.join
+  end
+end
+
+# mastermind = Game.new
+# mastermind.mastermind_code
+# mastermind.play_game
+
+# puts mastermind.player.player_guess_code.join
+# puts mastermind.rounds
