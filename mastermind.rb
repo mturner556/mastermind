@@ -11,24 +11,24 @@ class MastermindCode
     @master_code = []
   end
 
-  def store_master_code(pattern)
-    pattern.each { |e| @master_code.push(@choices[e - 1]) }
+  def store_master_code(code)
+    code.each { |e| @master_code.push(e) }
   end
 
-  def compare(code, master_code)
-    if code == master_code
+  def compare(code)
+    if code == @master_code
       puts 'You win!'
     else
       puts 'You lose!'
     end
   end
 
-  def display(guess)
-    puts guess.map { |e| @choices[e - 1] }.join
+  def display(code)
+    puts code.map { |e| @choices[e - 1] }.join
   end
 
   def hint(guess)
-    puts guess.each { |e| @master_code.include?(e) }
+    puts guess.map.with_index { |x, i| x == @master_code[i] }.shuffle
   end
 end
 
@@ -53,7 +53,7 @@ end
 
 # The Game class will keep track of the rounds, and compare the Player's guess with the Computer's master code
 class Game
-  attr_reader :rounds, :player, :computer
+  attr_reader :rounds, :player, :computer, :code_to_break
 
   def initialize
     @rounds = 0
@@ -68,9 +68,10 @@ class Game
       # gets the guess
       @player.player_guess
       # compares the guess
-      @code_to_break.compare(@player.player_guess_code, @computer.comp_master_code)
+      @code_to_break.compare(@player.player_guess_code)
       # displays the guess and hints
-      @code_to_break.display(@player.player_guess_code); @code_to_break.hint(@player.player_guess_code)
+      @code_to_break.display(@player.player_guess_code)
+      @code_to_break.hint(@player.player_guess_code)
       @rounds += 1
     end
   end
