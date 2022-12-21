@@ -1,6 +1,3 @@
-# puts "\u{2bc1}".white #correct color, wrong position, uses unicode
-# puts "\u{2bc1}".red #correct color and position, uses unicode
-
 # require colorize to display a colorful output in the command line
 require 'colorize'
 
@@ -10,7 +7,7 @@ class MastermindCode
 
   def initialize
     @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
-    @hints = [' '.on_red, ' '.on_white]
+    @hints = ['u\(2bc1}'.on_red, '\u{2bc1}'.on_white]
     @master_code = []
   end
 
@@ -24,6 +21,14 @@ class MastermindCode
     else
       puts 'You lose!'
     end
+  end
+
+  def display(guess)
+    puts guess.map { |e| @choices[e - 1] }.join
+  end
+
+  def hint(guess)
+    puts guess.each { |e| @master_code.include?(e) }
   end
 end
 
@@ -60,8 +65,12 @@ class Game
   # play_game will get the Player's code for 12 rounds
   def play_game
     while @rounds < 11
+      # gets the guess
       @player.player_guess
+      # compares the guess
       @code_to_break.compare(@player.player_guess_code, @computer.comp_master_code)
+      # displays the guess and hints
+      @code_to_break.display(@player.player_guess_code); @code_to_break.hint(@player.player_guess_code)
       @rounds += 1
     end
   end
@@ -72,9 +81,11 @@ class Game
   end
 end
 
-# mastermind = Game.new
-# mastermind.mastermind_code
-# mastermind.play_game
 
-# puts mastermind.player.player_guess_code.join
-# puts mastermind.rounds
+
+mastermind = Game.new
+mastermind.mastermind_code
+mastermind.play_game
+
+puts mastermind.player.player_guess_code.join
+puts mastermind.rounds
