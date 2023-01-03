@@ -7,7 +7,7 @@ class MastermindCode
 
   def initialize
     @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
-    @hints = ['u\(2bc1}'.on_red, '\u{2bc1}'.on_white]
+    @hints = ["\u{2b24}".red, "\u{2b24}".white, "\u{25cc}".white]
     @master_code = []
   end
 
@@ -17,9 +17,7 @@ class MastermindCode
 
   def compare(code)
     if code == @master_code
-      puts 'You win!'
-    else
-      puts 'You lose!'
+      true
     end
   end
 
@@ -28,7 +26,16 @@ class MastermindCode
   end
 
   def hint(guess)
-    puts guess.map.with_index { |x, i| x == @master_code[i] }.shuffle
+    hint = guess.map.with_index do |x, i| 
+      if x == @master_code[i]
+        @hints[0]
+      elsif @master_code.include?(x)
+        @hints[1]
+      else
+        @hints[2]
+      end
+    end
+    puts hint.shuffle.join(' ')
   end
 end
 
@@ -60,15 +67,16 @@ class Game
     @player = Player.new
     @computer = Computer.new
     @code_to_break = MastermindCode.new
+    @winner = false
   end
 
   # play_game will get the Player's code for 12 rounds
   def play_game
-    while @rounds < 11
+    until @rounds > 11 || @winner == true
       # gets the guess
       @player.player_guess
       # compares the guess
-      @code_to_break.compare(@player.player_guess_code)
+      @code_to_break.compare(@player.player_guess_code) ? @winner = true : false
       # displays the guess and hints
       @code_to_break.display(@player.player_guess_code)
       @code_to_break.hint(@player.player_guess_code)
@@ -82,11 +90,6 @@ class Game
   end
 end
 
-
-
-mastermind = Game.new
-mastermind.mastermind_code
-mastermind.play_game
-
-puts mastermind.player.player_guess_code.join
-puts mastermind.rounds
+game = Game.new
+game.mastermind_code
+game.play_game
