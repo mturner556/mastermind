@@ -86,6 +86,7 @@ class Game
   # play_game will get the Player's code for 12 rounds
   def play_game
     until @rounds > 11 || @winner == true
+      puts "Select a 4 colors using 1-6./n The choices are: #{$blue}, #{$light_red}, #{$green}, #{$yellow}, #{$cyan}, #{$magenta}"
       # gets the guess
       @player.player_guess
       # compares the guess
@@ -99,12 +100,20 @@ class Game
 
   def mastermind_code
     @code_to_break.store_master_code(@computer.make_master_code)
-    puts @computer.comp_master_code.join
   end
+end
 
+# Interface will give instruction and control the flow of the game
+class Interface
+
+  def initialize
+    @ask
+    @game = Game.new
+  end
   # the following methods will give instruction and other feedback for the user
   def instruction
     puts instruction = <<~HEREDOC
+
       Mastermind is a game played by one player against a computer. The
       game will be played in 12 rounds. You will have to guess the code the
       computer sets.
@@ -120,17 +129,34 @@ class Game
       #{$clear} means you have the incorrect color and postion.
 
       Hints are in no specific order.
+
     HEREDOC
   end
 
-  def prompt
+  # prompt user to start the game
+  def prompt_play
+    puts "Are you ready to start?\n 'y' for yes \n 'n' for no"
+    @ask = gets.chomp.downcase
+    start
+  end
+
+  def start
+    case @ask
+    when /y/
+      game.mastermind_code
+      game.play_game
+    when /n/
+      puts 'Well bye!'
+    else
+      prompt_play
+    end
   end
 
   def result
   end
 end
 
-game = Game.new
-# game.mastermind_code
-# game.play_game"\u{25cc}".white
-game.instruction
+user_interface = Interface.new
+user_interface.instruction
+user_interface.prompt_play
+user_interface.start
