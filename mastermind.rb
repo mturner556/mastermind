@@ -1,13 +1,25 @@
 # require colorize to display a colorful output in the command line
 require 'colorize'
 
+$blue = ' 1 '.on_blue
+$light_red = ' 2 '.on_light_red
+$green = ' 3 '.on_green
+$yellow = ' 4 '.on_yellow
+$cyan = ' 5 '.on_cyan
+$magenta = ' 6 '.on_magenta
+
+$red = "\u{2b24}".red
+$white = "\u{2b24}".white
+$clear = "\u{25cc}".white
+
+
 # MastermindCode class will store a selection of 6 colors and store the master_code
 class MastermindCode
   attr_reader :choices, :master_code, :hints
 
   def initialize
-    @choices = [' 1 '.on_blue, ' 2 '.on_light_red, ' 3 '.on_green, ' 4 '.on_yellow, ' 5 '.on_cyan, ' 6 '.on_magenta]
-    @hints = ["\u{2b24}".red, "\u{2b24}".white, "\u{25cc}".white]
+    @choices = [$blue, $light_red, $green, $yellow, $cyan, $magenta]
+    @hints = [$red, $white, $clear]
     @master_code = []
   end
 
@@ -25,8 +37,9 @@ class MastermindCode
     puts code.map { |e| @choices[e - 1] }.join
   end
 
+  # hints[0] (red) correct value/postion, hints[1] (white) correct value/incorrect position, hints[2] (clear) incorrect value/position
   def hint(guess)
-    hint = guess.map.with_index do |x, i| 
+    hint = guess.map.with_index do |x, i|
       if x == @master_code[i]
         @hints[0]
       elsif @master_code.include?(x)
@@ -88,8 +101,36 @@ class Game
     @code_to_break.store_master_code(@computer.make_master_code)
     puts @computer.comp_master_code.join
   end
+
+  # the following methods will give instruction and other feedback for the user
+  def instruction
+    puts instruction = <<~HEREDOC
+      Mastermind is a game played by one player against a computer. The
+      game will be played in 12 rounds. You will have to guess the code the
+      computer sets.
+
+      The choices are #{$blue}, #{$light_red}, #{$green}, #{$yellow}, #{$cyan}, #{$magenta}.
+      The Master code will be comprised of four non-repeating colors. Hints will be given based
+      on your guess. Start by selecting a number associated with your color choice.
+
+      Hints will be displayed below your guess.
+
+      #{$red} means you have chosen the correct color and postion.
+      #{$white} means you have chosen the correct color but incorrect position.
+      #{$clear} means you have the incorrect color and postion.
+
+      Hints are in no specific order.
+    HEREDOC
+  end
+
+  def prompt
+  end
+
+  def result
+  end
 end
 
 game = Game.new
-game.mastermind_code
-game.play_game
+# game.mastermind_code
+# game.play_game"\u{25cc}".white
+game.instruction
